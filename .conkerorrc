@@ -1,0 +1,26 @@
+add_delicious_webjumps ("bartfaitamas");
+
+//user_pref("conkeror.loadDefaultModules", 1);
+//user_pref("conkeror.load.tab_bar_mode", 1);
+//user_pref("extensions.checkUpdateSecurity", false);
+
+interactive("follow-new-buffer", function (I) {
+	      var target = OPEN_NEW_BUFFER;
+	      var element = yield I.read_browser_object("follow", "Follow", "links", target);
+	      browser_element_follow(I.buffer, target, element);
+	    });
+interactive("follow-new-buffer-background", function (I) {
+	      var target = OPEN_NEW_BUFFER_BACKGROUND;
+	      var element = yield I.read_browser_object("follow", "Follow", "links", target);
+	      browser_element_follow(I.buffer, target, element);
+	    });
+
+interactive("follow-new-window", function (I) {
+	      var target = OPEN_NEW_WINDOW;
+	      var element = yield I.read_browser_object("follow", "Follow", "links", target);
+	      browser_element_follow(I.buffer, target, element);
+	    });
+
+define_key(content_buffer_normal_keymap, "d", "follow-new-window");
+
+

@@ -1,0 +1,131 @@
+! --------------------------------------------------------------------
+! http://gentoo-wiki.com/TIP_Linux_Colors_in_Aterm/rxvt
+! ---------------------------------------------------------------------
+URxvt.background:  #000000
+!URxvt.foreground:  #7f7f7f
+URxvt.foreground:  #bebebe
+URxvt.color0:      #000000
+URxvt.color1:      #9e1828
+URxvt.color2:      #aece92
+URxvt.color3:      #968a38
+URxvt.color4:      #414171
+URxvt.color5:      #963c59
+URxvt.color6:      #418179
+URxvt.color7:      #bebebe
+URxvt.color8:      #666666
+URxvt.color9:      #cf6171
+URxvt.color10:     #c5f779
+URxvt.color11:     #fff796
+URxvt.color12:     #4186be
+URxvt.color13:     #cf9ebe
+URxvt.color14:     #71bebe
+URxvt.color15:     #ffffff
+
+
+! --------------------------------------------------------------------
+! http://sdkmvx.wordpress.com/2008/08/13/rxvt-unicode-terminal-colors/
+! ---------------------------------------------------------------------
+!URxvt.foreground: #f2f2f2
+!URxvt.background: #101010
+
+!! Normal
+!! color0    black
+!! color1    red
+!! color2    green
+!! color3    yellow
+!! color4    blue
+!! color5    purple
+!! color6    cyan
+!! color7    white
+!URxvt.color0:    #6c6c6c
+!URxvt.color1:    #e9897c
+!URxvt.color2:    #b6e77d
+!URxvt.color3:    #ecebbe
+!URxvt.color4:    #a9cdeb
+!URxvt.color5:    #ea96eb
+!URxvt.color6:    #c9caec
+!URxvt.color7:    #f2f2f2
+!! Light
+!! color8    black
+!! color9    red
+!! color10    green
+!! color11    yellow
+!! color12    blue
+!! color13    purple
+!! color14    cyan
+!! color15    white
+!URxvt.color8:    #747474
+!URxvt.color9:    #f99286
+!URxvt.color10:    #c3f786
+!URxvt.color11:    #fcfbcc
+!URxvt.color12:    #b6defb
+!URxvt.color13:    #fba1fb
+!URxvt.color14:    #d7d9fc
+!URxvt.color15:    #e2e2e2
+
+! --------------------------------------
+! other scheme
+! -------------------------------------
+!URxvt.background: black
+!URxvt.foreground: white
+
+!URxvt.color0: black
+!URxvt.color1: red3
+!URxvt.color2: green3
+!URxvt.color3: yellow3
+!URxvt.color4: DodgerBlue1
+!URxvt.color5: magenta3
+!URxvt.color6: cyan3
+!URxvt.color7: gray90
+!URxvt.color8: gray50
+!URxvt.color9: red
+!URxvt.color10: green
+!URxvt.color11: yellow
+!URxvt.color12: SteelBlue1
+!URxvt.color13: magenta
+!URxvt.color14: cyan
+!URxvt.color15: white
+!URxvt.colorUL: white
+!URxvt.colorBD: yellow
+
+URxvt.reverseVideo: false
+
+URxvt.tabbed.tab-bg: 8
+URxvt.tabbed.tab-fg: 4
+URxvt.tabbed.tabbar-bg: 8
+URxvt.tabbed.tabbar-fg: 15
+
+URxvt.scrollBar: true
+URxvt.scrollstyle: plain
+URxvt.scrollColor: #666666
+URxvt.loginShell: true
+
+! Uncomment for color/font settings like in Debians uxterm
+
+!URxvt.font: -misc-fixed-medium-r-semicondensed--13-120-75-75-c-60-iso10646-1
+! rxvt perl extensions setup
+! ---------------------------------------------------------------------------
+! removing annoying search
+!URxvt.perl-ext-common: default,-searchable-scrollback,selection-popup,tabbed
+URxvt.perl-ext-common: default,-searchable-scrollback,selection-popup,-tabbed
+
+! Font settings
+! URxvt uses UTF-8, so we dont need encoding-specific settings
+! ---------------------------------------------------------------------------
+URxvt.font: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true
+URxvt.boldFont: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true
+URxvt.italicFont: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true
+URxvt.boldItalicFont: xft:Bitstream Vera Sans Mono:pixelsize=12:antialias=true
+!URxvt.font:
+!URxvt.font: xft:Monospace:pixelsize=16:antialias=true
+!URxvt.font: xft:"DejaVu Sans Mono:pixelsize=11"
+
+XTerm*faceName: DejaVu Sans Mono
+XTerm*faceSize: 10
+XTerm*boldFont: DejaVu Sans Mono Bold
+XTerm*Utf8Title: true
+
+XLock.mode: blank
+
+XBoard*boardSize: Moderate
+

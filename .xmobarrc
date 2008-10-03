@@ -1,0 +1,15 @@
+Config { font = "-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
+       , bgColor = "#2c2c32"
+       , fgColor = "grey70"
+       , position = Top
+       , commands = [ Run StdinReader
+                    , Run Network "eth0" ["-L","0","-H","32","--normal","white","--high","#a6c292"] 10
+                    , Run Cpu ["-L","3","-H","50","--normal","white","--high","#a6c292"] 10
+                    , Run Memory ["-t","Mem: <usedratio>%"] 10
+                    , Run Swap [] 10
+    		    , Run Date "%a, %Y %b %_d %H:%M" "date" 10
+                    ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "%StdinReader% }{ %cpu% | %memory% * %swap% | %eth0% | <fc=#a6c292>%date%</fc>"
+       }
