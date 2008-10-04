@@ -7,7 +7,7 @@ require 'optparse'
 #$source_dir = Pathname.new(ENV['HOME']) + "dotfiles"
 
 $target_dir = Pathname.new(ENV['HOME'])
-$source_dir = Pathname.new($0).parent
+$source_dir = Pathname.new($0).parent.realpath
 
 $dir_excludes = [/^\.$/, /^\.\.$/, /^\.git$/, /bak$/]
 $file_excludes = [/~$/, /dotfiles.rb/ ]
