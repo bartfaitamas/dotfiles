@@ -1,3 +1,4 @@
+# -*- shell-script -*-
 # .xinitrc
 PATH=$HOME/bin:$PATH
 #export AWT_TOOLKIT=MToolkit
@@ -26,14 +27,21 @@ fi
 xset fp+ $HOME/.fonts
 xset fp rehash
 
-pulseaudio -D
-mpd
-gnome-settings-daemon &
+trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0x2c2c32 --alpha 0 --height 10 &
+pulseaudio &
+mpd &
+gnome-settings-daemon --no-daemon &
 
 xmonad &
+xmonad_pid=$!
+
+pkill gnome-settings-daemon
+pkill mpd
+pkill pulseaudio
+pkill trayer
 
 # wait for xmonad
-wait $!
+wait $xmonad_pid
 #pkill -HUP dzen2
 #pkill -HUP -f xmonad-clock
 #wait

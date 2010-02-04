@@ -36,5 +36,5 @@ nmap <S-Up>     <C-w>W
 nmap <S-Left>   <C-w>h
 nmap <S-Right>  <C-w>l
 
-" colorscheme desert
+colorscheme ron
 set guioptions=aegirLt

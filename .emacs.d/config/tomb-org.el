@@ -1,6 +1,7 @@
 ;; org mode
 (require 'org-install)
-(require 'blorg)
+(require 'org-jsinfo)
+;; (require 'blorg)
 
 (load "~/.emacs.d/config/tomb-org-funcs.el")
 
@@ -67,31 +68,57 @@
 ;; (defun org-publish-org-to-xoxo (plist filename pub-dir)
 ;;   "Publishing an org file to XOXO"
 ;;   (org-publish-org-to "xoxo" plist filename pub-dir))
+(setq org-export-html-use-infojs t)
+(setq org-infojs-options '((path . "http://orgmode.org/org-info.js")
+ (view . "info")
+ (toc . :table-of-contents)
+ (ftoc . "0")
+ (tdepth . "max")
+ (sdepth . "max")
+ (mouse . "underline")
+ (buttons . "0")
+ (ltoc . "0")
+ (up . :link-up)
+ (home . :link-home))
+)
 (setq org-publish-project-alist
-      '(("org"
-	 :base-directory "~/org/"
-	 :publishing-directory "/var/www/org"
-	 :section-numbers nil
-	 :table-of-contents nil)
-      ("brainstorming"
-	 :base-directory "~/org/brainstorm"
-	 :publishing-directory "/ssh:TBartfai@devel:~/public_html/brainstorm/"
-	 :publishing-function org-publish-org-to-html
-	 :section-numbers nil
+      '(
+	("tukir" :components ("tukir-notes" "tukir-static"))
+	("tukir-static"
+	 :base-directory "~/org/tukir/"
+	 :publishing-directory "/var/www/tukir"
+	 :recursive t
+	 :publishing-function org-publish-attachment
+	 :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|mp3\\|ogg\\|swf"
+	 )
+	("tukir-notes"
+	 :base-directory "~/org/tukir/"
+	 :publishing-directory "/var/www/tukir"
 	 :author "Bártfai Tamás"
 	 :email "TBartfai@novell.com"
-	 )))
+	 :publishing-function org-publish-org-to-html
+	 :recursive t
+	 :style "<link rel=stylesheet href=\"css/org.css\" type=\"text/css\">
+<link rel=stylesheet href=\"css/worg.css\" type=\"text/css\">"
+	 :table-of-contents 2
+	 :toc 2
+	 :language hu
+	 :auto-index t
+	 :index-filename "sitemap.org"
+	 :index-title "Sitemap"
+	 )
+	))
 
 (setq org-export-with-drawers t)
 
 (add-hook 'remember-mode-hook 
 	  'my-start-clock-if-needed 'append)
 
-(add-hook 'org-after-todo-state-change-hook
-	  'sacha/org-clock-in-if-starting)
+;; (add-hook 'org-after-todo-state-change-hook
+;; 	  'sacha/org-clock-in-if-starting)
 
-(add-hook 'org-after-todo-state-change-hook
-	  'sacha/org-clock-out-if-waiting)
+;; (add-hook 'org-after-todo-state-change-hook
+;; 	  'sacha/org-clock-out-if-waiting)
 
-(add-hook 'org-after-todo-state-change-hook
-	  'sacha/org-clock-out-if-waiting)
+;; (add-hook 'org-after-todo-state-change-hook
+;; 	  'sacha/org-clock-out-if-waiting)

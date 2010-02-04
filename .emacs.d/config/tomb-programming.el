@@ -16,3 +16,7 @@
 ;; -----------------------------------------------------------------------------
 (setq ri-ruby-script "/home/tbartfai/bin/ri-emacs.rb")
 (autoload 'ri "/home/tbartfai/share/emacs/site-lisp/ri-ruby.el" nil t)
+
+;; JIRA setup
+(setq jira-url "https://issues.npsh.hu/rpc/xmlrpc")
+(require 'jira)

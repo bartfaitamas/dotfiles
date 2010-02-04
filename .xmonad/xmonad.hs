@@ -1,4 +1,5 @@
 import XMonad
+import qualified XMonad.StackSet as W
 import XMonad.Layout
 import XMonad.Config (defaultConfig)
 import XMonad.Layout.NoBorders
@@ -13,7 +14,7 @@ import XMonad.Hooks.ManageDocks
 import XMonad.Actions.Submap
 
 
-import XMonad.Prompt             ( XPConfig(..), XPPosition(..) )
+import XMonad.Prompt            -- ( XPConfig(..), XPPosition(..) )
 import XMonad.Prompt.Shell       ( shellPrompt )
 import XMonad.Prompt.Ssh
 import XMonad.Prompt.Man
@@ -31,7 +32,29 @@ myBGColor = "#2c2c32"
 myFGColor = "grey70"
 myActiveFGColor = "#a6c292"
 myActiveBGColor = "#3d4736"
-myFont = "-*-profont-*-*-*-*-11-*-*-*-*-*-iso8859-*"
+--myFont = "-*-profont-*-*-*-*-11-*-*-*-*-*-iso8859-*"
+myFont = "xft:Monospace-10"
+
+tombManageHook = composeAll [
+                   className =? "Gimp" --> doFloat
+                 , className =? "Pidgin" --> doFloat
+                 , className =? "GroupWise" --> doF (W.shift "5:comm")
+                 ]
+
+tombXPConfig :: XPConfig
+tombXPConfig  = defaultXPConfig {
+                  font              = myFont
+                , bgColor           = myBGColor
+                , fgColor           = myFGColor
+                , bgHLight          = "#aecf96"
+                , fgHLight          = "black"
+                , borderColor       = "black"
+                , promptBorderWidth = 0
+                , position          = Bottom
+                , height            = 15
+                , historySize       = 256
+                , defaultText       = []
+                }
 
 main :: IO ()
 main = do 
@@ -43,10 +66,11 @@ main = do
        , focusedBorderColor = myFocusedBorderColor
        , terminal           = "x-terminal-emulator"
        , workspaces         = ["1:web", "2:dev", "3:plan", "4:srv", "5:comm", "6:adm", "7:remote"]
+       , manageHook         = manageDocks <+> tombManageHook <+>
+                              manageHook defaultConfig
        , logHook            = tombXmobarLogHook xmobar
        , layoutHook         = tombLayoutHook
        , keys               = \c -> tombKeys c `M.union` keys defaultConfig c
---       , startupHook        = setWMName "LG3D"
        }
     where
 
@@ -58,29 +82,15 @@ main = do
             delta = 0.03                               -- Percent of screen to increment by when resizing
 
 
-      tombSPConfig  = XPC {
-                        font              = myFont
-                      , bgColor           = myBGColor
-                      , fgColor           = myFGColor
-                      , bgHLight          = "#aecf96"
-                      , fgHLight          = "black"
-                      , borderColor       = "black"
-                      , promptBorderWidth = 0
-                      , position          = Bottom
-                      , height            = 15
-                      , historySize       = 256
-                      , defaultText       = []
-                      }
-
       tombKeys (XConfig {modMask = modm}) = M.fromList $
-                                             [ ((modm,                 xK_p), shellPrompt tombSPConfig) 
-                                             , ((controlMask .|. modm, xK_s), sshPrompt tombSPConfig)
-                                             , ((modm,                 xK_F1), manPrompt tombSPConfig)
+                                             [ ((modm,                 xK_p), shellPrompt tombXPConfig) 
+                                             , ((controlMask .|. modm, xK_s), sshPrompt tombXPConfig)
+                                             , ((modm,                 xK_F1), manPrompt tombXPConfig)
                                              , ((shiftMask .|. modm, xK_l),    spawn "xlock -mode blank")
                                              -- multimedia keys
-                                             , ((modm,                 xK_KP_Add),       spawn "amixer -q set PCM 2dB+")
-                                             , ((modm,                 xK_KP_Subtract),  spawn "amixer -q set PCM 2dB-")
-                                             , ((modm,                 xK_KP_Enter),     spawn "amixer -q set PCM toggle")
+                                             , ((modm,                 xK_KP_Add),       spawn "amixer -q sset Master 2%+")
+                                             , ((modm,                 xK_KP_Subtract),  spawn "amixer -q sset Master 2%-")
+                                             , ((modm,                 xK_KP_Enter),     spawn "amixer -q sset Master toggle")
                                              , ((modm,                 xK_KP_Begin),     spawn "mpc toggle")
                                              , ((modm,                 xK_KP_5),         spawn "mpc toggle")
                                              , ((modm,                 xK_KP_Right),     spawn "mpc next")

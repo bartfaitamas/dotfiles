@@ -6,8 +6,8 @@ require 'optparse'
 #$target_dir = Pathname.new("/tmp/dotfilestest")
 #$source_dir = Pathname.new(ENV['HOME']) + "dotfiles"
 
-$target_dir = Pathname.new(ENV['HOME'])
-$source_dir = Pathname.new($0).parent
+$target_dir = Pathname.new(ENV['HOME']).realpath
+$source_dir = Pathname.new($0).parent.realpath
 
 $dir_excludes = [/^\.$/, /^\.\.$/, /^\.git$/, /bak$/]
 $file_excludes = [/~$/, /dotfiles.rb/ ]
@@ -120,9 +120,9 @@ end
 
 opts = OptionParser.new
 opts.on("-sSOURCE", "--source=SOURCE", 
-        "Source directory, default ''#{Pathname.new($0).parent}``") {|s| $source_dir = Pathname.new(s)}
+        "Source directory, default ''#{Pathname.new($0).parent.realpath}``") {|s| $source_dir = Pathname.new(s).realpath}
 opts.on("-tTARGET", "--target=TARGET", 
-        "Target directory, default ''#{ENV['HOME']}``") {|t| $target_dir = Pathname.new(t)}
+        "Target directory, default ''#{ENV['HOME']}``") {|t| $target_dir = Pathname.new(t).realpath}
 
 opts.on("-v", "--verbose") { $verbose = true; }
 opts.on("-d", "--dry-run") { $dry_run = true }
