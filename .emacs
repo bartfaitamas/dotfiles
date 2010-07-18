@@ -1,6 +1,10 @@
 ;; load-paths
 (setq load-path (cons "~/share/emacs/site-lisp" load-path))
 
+;; gnome2-globalmenu workaround
+;;(defun ggm-menuupdate () (menu-bar-mode -1) (menu-bar-mode 1))
+;;(add-hook 'window-configuration-change-hook 'ggm-menuupdate)
+
 (eval-after-load "htmlize"
   '(progn
      (defadvice htmlize-faces-in-buffer (after org-no-nil-faces activate)
@@ -15,6 +19,20 @@
 (load "~/.emacs.d/config/tomb-sql.el")
 (require 'ledger)
 
+;; some experimental
+(require 'notify)
+(require 'dbus)
+(defun tbartfai/check-org-clock-and-notify ()
+  "Checks whether there is a running clock in org-mode, and if there's none, sends a notfication"
+  (unless (org-clock-is-active)
+        (notify "Nincs task" "Nincs futo task, nem tudjuk merni, mit csinalunk"))
+)
+
+(when window-system
+  (run-at-time nil 300 'tbartfai/check-org-clock-and-notify)
+)
+
+
 (custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -26,10 +44,11 @@
  '(indent-tabs-mode nil)
  '(mail-user-agent (quote gnus-user-agent))
  '(message-send-mail-function (quote message-smtpmail-send-it))
- '(org-agenda-files (quote ("~/org/openadm.org" "~/org/tukir.org" "~/org/npsh.org" "~/org/timelog.org" "~/org/openadm.org_archive" "~/org/nka.org")))
  '(read-mail-command (quote gnus))
  '(server-window (quote switch-to-buffer-other-frame))
- '(show-paren-mode t))
+ '(show-paren-mode t)
+ '(sql-ms-options nil)
+ '(truncate-lines t))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.

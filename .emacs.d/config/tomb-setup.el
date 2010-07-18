@@ -13,6 +13,7 @@
 (setq text-mode-hook 
       (quote (turn-on-auto-fill text-mode-hook-identify)))
 (tool-bar-mode nil)
+;(menu-bar-mode nil)
 (show-paren-mode 1)
 
 (put 'kill-emacs 'disabled t)
