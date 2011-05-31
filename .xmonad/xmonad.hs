@@ -1,179 +1,190 @@
-{-# OPTIONS_GHC -cpp #-}
-
-{-
-#include <X11/XF86keysym.h>
--}
-
 import XMonad
-import qualified XMonad.StackSet as W
-import XMonad.Layout
-import XMonad.Config (defaultConfig)
-import XMonad.Layout.NoBorders
-import XMonad.Layout.Tabbed
 
--- for managehook
-import XMonad.ManageHook
-import qualified XMonad.StackSet as W
-import XMonad.Hooks.XPropManage
-import Data.List
-
+import Control.OldException(catchDyn,try)
+import XMonad.Config.Gnome
 import XMonad.Hooks.DynamicLog
+import qualified XMonad.StackSet as W
+import qualified Data.Map        as M
+import XMonad.Actions.CycleWS
+
 import XMonad.Hooks.UrgencyHook
-import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog,  doFullFloat, doCenterFloat)
+import XMonad.Layout.NoBorders
 
--- import XMonad.Actions.RotSlaves
-import XMonad.Actions.Submap
-
-
-import XMonad.Prompt            -- ( XPConfig(..), XPPosition(..) )
-import XMonad.Prompt.Shell       ( shellPrompt )
-import XMonad.Prompt.Ssh
-import XMonad.Prompt.Man
-
-import Data.Bits
-import qualified Data.Map as M
-import XMonad.Util.Run (spawnPipe)
-import System.IO (hPutStrLn)
-import Graphics.X11
-
-myNormalBorderColor = "grey30"
--- myFocusedBorderColor = "#aecf96"
-myFocusedBorderColor = "red"
-myBGColor = "#2c2c32"
-myFGColor = "grey70"
-myActiveFGColor = "#a6c292"
-myActiveBGColor = "#3d4736"
---myFont = "-*-profont-*-*-*-*-11-*-*-*-*-*-iso8859-*"
-myFont = "xft:Monospace-10"
-
-tombManageHook = composeAll [
-                   className =? "Gimp" --> doFloat
-                 , className =? "Pidgin" --> doFloat
-                 , className =? "GroupWise" --> doF (W.shift "5:comm")
-                 ]
-
-tombXPConfig :: XPConfig
-tombXPConfig  = defaultXPConfig {
-                  font              = myFont
-                , bgColor           = myBGColor
-                , fgColor           = myFGColor
-                , bgHLight          = "#aecf96"
-                , fgHLight          = "black"
-                , borderColor       = "black"
-                , promptBorderWidth = 0
-                , position          = Bottom
-                , height            = 15
-                , historySize       = 256
-                , defaultText       = []
-                }
+import qualified XMonad.StackSet as W
+import qualified Data.Map        as M
+import XMonad.Actions.CycleWS
 
 
-tombSPConfig :: XPConfig
-tombSPConfig  = defaultXPConfig {
-                  font              = myFont
-                , bgColor           = myBGColor
-                , fgColor           = myFGColor
-                , bgHLight          = "#aecf96"
-                , fgHLight          = "black"
-                , borderColor       = "red"
-                , promptBorderWidth = 0
-                , position          = Bottom
-                , height            = 15
-                , historySize       = 256
-                , defaultText       = []
-                }
+import DBus
+import DBus.Connection
+import DBus.Message
+
+main = withConnection Session $ \ dbus -> do
+  getWellKnownName dbus
+  xmonad $ withUrgencyHook NoUrgencyHook $ gnomeConfig 
+       { borderWidth         = 2
+       , terminal            = "urxvt"
+       , modMask             = mod4Mask
+       , keys                = myKeys
+       , logHook             = dynamicLogWithPP (myPrettyPrinter dbus)
+       , normalBorderColor   = "#cccccc"
+       , focusedBorderColor  = "#cd8b00" }
+       
+------------------------------------------------------------------------
+-- Key bindings. Add, modify or remove key bindings here.
+--
+myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
+
+    -- launch a terminal
+    [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
+    , ((modMask .|. shiftMask, xK_l     ), spawn $ "xlock -mode blank")
+    -- launch dmenu
+    , ((modMask,               xK_p     ), spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
+
+    -- launch gmrun
+    , ((modMask .|. shiftMask, xK_p     ), spawn "gmrun")
+
+    -- close focused window 
+    , ((modMask .|. shiftMask, xK_c     ), kill)
+
+     -- Rotate through the available layout algorithms
+    , ((modMask,               xK_space ), sendMessage NextLayout)
+
+    --  Reset the layouts on the current workspace to default
+    , ((modMask .|. shiftMask, xK_space ), setLayout $ XMonad.layoutHook conf)
+
+    -- Resize viewed windows to the correct size
+    , ((modMask,               xK_n     ), refresh)
+
+    -- Move focus to the next window
+    , ((modMask,               xK_Tab   ), windows W.focusDown)
+
+    -- Move focus to the next window
+    , ((modMask,               xK_j     ), windows W.focusDown)
+
+    -- Move focus to the previous window
+    , ((modMask,               xK_k     ), windows W.focusUp  )
+
+    -- Move focus to the master window
+    , ((modMask,               xK_m     ), windows W.focusMaster  )
+
+    -- Swap the focused window and the master window
+    , ((modMask,               xK_Return), windows W.swapMaster)
+
+    -- Swap the focused window with the next window
+    , ((modMask .|. shiftMask, xK_j     ), windows W.swapDown  )
+
+    -- Swap the focused window with the previous window
+    , ((modMask .|. shiftMask, xK_k     ), windows W.swapUp    )
+
+    -- Shrink the master area
+    , ((modMask,               xK_h     ), sendMessage Shrink)
+
+    -- Expand the master area
+    , ((modMask,               xK_l     ), sendMessage Expand)
+
+    -- Push window back into tiling
+    , ((modMask,               xK_t     ), withFocused $ windows . W.sink)
+
+    -- Increment the number of windows in the master area
+    , ((modMask              , xK_comma ), sendMessage (IncMasterN 1))
+
+    -- Deincrement the number of windows in the master area
+    , ((modMask              , xK_period), sendMessage (IncMasterN (-1)))
+
+    -- move focus between screens
+    , ((modMask .|. controlMask, xK_Right ), prevScreen)
+    , ((modMask .|. controlMask, xK_Left ), nextScreen)
+    , ((modMask .|. controlMask, xK_o ), shiftNextScreen)
+
+    , ((modMask                , xK_BackSpace), focusUrgent)
+    -- toggle the status bar gap
+    -- TODO, update this binding with avoidStruts , ((modMask              , xK_b     ),
+
+    -- Quit xmonad
+    --, ((modMask .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
+    , ((modMask .|. shiftMask,   xK_q     ), spawn "gnome-session-save --gui --logout-dialog")
+
+    -- Restart xmonad
+    , ((modMask              , xK_q     ), restart "xmonad" True)
+    , ((modMask,                 xK_KP_Add),       spawn "amixer -c 0 -q set PCM 2dB+")
+    , ((modMask,                 xK_KP_Subtract),  spawn "amixer -c 0 -q set PCM 2dB-")
+    , ((modMask,                 xK_KP_Enter),     spawn "amixer -c 0 -q set PCM toggle")
+    , ((modMask,                 xK_KP_Begin),     spawn "mpc toggle")
+    , ((modMask,                 xK_KP_5),         spawn "mpc toggle")
+    , ((modMask,                 xK_KP_Right),     spawn "mpc next")
+    , ((modMask,                 xK_KP_6),         spawn "mpc next")
+    , ((modMask,                 xK_KP_Left),      spawn "mpc prev")
+    , ((modMask,                 xK_KP_4),         spawn "mpc prev")
+    --, ((0, XF86XK_AudioLowerVolume),            spawn "amixer -c 0 -q set PCM 2dB-")
+    --, ((0, XF86XK_AudioRaiseVolume),            spawn "amixer -c 0 -q set PCM 2dB+")
+    --, ((0, XF86XK_AudioPause),                  spawn "mpc toggle")
+    --, ((0, XF86XK_AudioStop),                   spawn "mpc stop")
+    ]
+    ++
+
+    --
+    -- mod-[1..9], Switch to workspace N
+    -- mod-shift-[1..9], Move client to workspace N
+    --
+    [((m .|. modMask, k), windows $ f i)
+        | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
+        , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
+    ++
+
+    --
+    -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
+    -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
+    --
+    [((m .|. modMask, key), screenWorkspace sc >>= flip whenJust (windows . f))
+        | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
+        , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
-main :: IO ()
-main = do 
-  xmobar <- spawnPipe "xmobar"
-  xmonad $ withUrgencyHook NoUrgencyHook
-       $ defaultConfig
-       { modMask            = mod4Mask
-       , normalBorderColor  = myNormalBorderColor
-       , focusedBorderColor = myFocusedBorderColor
-       , terminal           = "x-terminal-emulator"
-       , workspaces         = ["1:web", "2:dev", "3:plan", "4:srv", "5:comm", "6:adm", "7:remote"]
-       , manageHook         = manageDocks <+> tombManageHook <+>
-                              manageHook defaultConfig
-       , logHook            = tombXmobarLogHook xmobar
-       , layoutHook         = tombLayoutHook
-       , manageHook         = newManageHook
-       , keys               = \c -> tombKeys c `M.union` keys defaultConfig c
-       }
-    where
-      tombManageHook = composeAll [ className =? "firefox-bin"              --> doF (W.shift "web")
-                                  , className =? "gtk-theme-switch2"        --> doFloat
-                                  , className =? "netbeans"                 --> doF (W.shift "dev")
-                                  ]
-      xPropMatches :: [XPropMatch]
-      xPropMatches = [ ([ (wM_CLASS, any ("firefox-bin"==))], pmP (W.shift "web"))
-                     , ([ (wM_CLASS, any ("gtk-theme-switch2"==))], pmX (float))
-                     , ([ (wM_CLASS, any ("skype"==))], pmX (float))
-                     , ([ (wM_CLASS, any ("netbeans" `isInfixOf`))], pmP (W.shift "dev"))
-                     ]
-      -- newManageHook = tombManageHook <+> manageHook defaultConfig
-      newManageHook = xPropManageHook xPropMatches <+> manageHook defaultConfig
--- ||| tabbed shrinkText defaultTheme
-tombLayoutHook = avoidStruts $ noBorders Full ||| tabbed shrinkText defaultTheme ||| Mirror tiled ||| tiled
-    where
-      tiled = Tall nmaster delta ratio
-      nmaster = 1                                -- The default number of windows in the master pane
-      ratio = toRational (2/(1+sqrt(5)::Double)) -- golden
-      delta = 0.03                               -- Percent of screen to increment by when resizing
+myPrettyPrinter :: Connection -> PP
+myPrettyPrinter dbus = defaultPP {
+  ppOutput  = outputThroughDBus dbus
+  , ppTitle   = pangoColor "#003366" . shorten 50 . pangoSanitize
+  , ppCurrent = pangoColor "#006666" . wrap "[" "]" . pangoSanitize
+  , ppVisible = pangoColor "#663366" . wrap "(" ")" . pangoSanitize
+  , ppHidden  = wrap " " " "
+  , ppUrgent  = pangoColor "red"
+  }
+   
+-- This retry is really awkward, but sometimes DBus won't let us get our
+-- name unless we retry a couple times.
+getWellKnownName :: Connection -> IO ()
+getWellKnownName dbus = tryGetName `catchDyn` (\ (DBus.Error _ _) ->
+                                                getWellKnownName dbus)
+  where
+    tryGetName = do
+      namereq <- newMethodCall serviceDBus pathDBus interfaceDBus "RequestName"
+      addArgs namereq [String "org.xmonad.Log", Word32 5]
+      sendWithReplyAndBlock dbus namereq 0
+      return ()
 
+       
+outputThroughDBus :: Connection -> String -> IO ()
+outputThroughDBus dbus str = do
+  let str' = "<span font=\"Terminus 9 Bold\">" ++ str ++ "</span>"
+  msg <- newSignal "/org/xmonad/Log" "org.xmonad.Log" "Update"
+  addArgs msg [String str']
+  send dbus msg 0 `catchDyn` (\ (DBus.Error _ _ ) -> return 0)
+  return ()    
+  
+pangoColor :: String -> String -> String
+pangoColor fg = wrap left right
+  where
+    left  = "<span foreground=\"" ++ fg ++ "\">"
+    right = "</span>"
 
-
-tombKeys (XConfig {modMask = modm}) = M.fromList $
-                                      [ 
-                                       ((modm,                 xK_p), shellPrompt tombSPConfig) 
-                                      , ((controlMask .|. modm, xK_s), sshPrompt tombSPConfig)
-                                      , ((modm,                 xK_F1), manPrompt tombSPConfig)
-                                      -- multimedia keys
-                                      , ((modm,                 xK_KP_Add),       spawn "amixer -q set PCM 2dB+")
-                                      , ((modm,                 xK_KP_Subtract),  spawn "amixer -q set PCM 2dB-")
-                                      , ((modm,                 xK_KP_Enter),     spawn "amixer -q set PCM toggle")
-                                      , ((modm,                 xK_KP_Begin),     spawn "mpc toggle")
-                                      , ((modm,                 xK_KP_5),         spawn "mpc toggle")
-                                      , ((modm,                 xK_KP_Right),     spawn "mpc next")
-                                      , ((modm,                 xK_KP_6),         spawn "mpc next")
-                                      , ((modm,                 xK_KP_Left),      spawn "mpc prev")
-                                      , ((modm,                 xK_KP_4),         spawn "mpc prev")
-                                      , ((0, XF86XK_AudioLowerVolume),            spawn "amixer -q set PCM 2dB-")
-                                      , ((0, XF86XK_AudioRaiseVolume),            spawn "amixer -q set PCM 2dB+")
-                                      , ((0, XF86XK_AudioPause),                  spawn "mpc toggle")
-                                      , ((0, XF86XK_AudioStop),                   spawn "mpc stop")
-                                      ]
-
-      tombLayoutHook = avoidStruts $ noBorders Full ||| tabbed shrinkText defaultTheme ||| Mirror tiled ||| tiled
-          where
-            tiled = Tall nmaster delta ratio
-            nmaster = 1                                -- The default number of windows in the master pane
-            ratio = toRational (2/(1+sqrt(5)::Double)) -- golden
-            delta = 0.03                               -- Percent of screen to increment by when resizing
-
-
-      tombKeys (XConfig {modMask = modm}) = M.fromList $
-                                             [ ((modm,                 xK_p), shellPrompt tombXPConfig) 
-                                             , ((controlMask .|. modm, xK_s), sshPrompt tombXPConfig)
-                                             , ((modm,                 xK_F1), manPrompt tombXPConfig)
-                                             , ((shiftMask .|. modm, xK_l),    spawn "xlock -mode blank")
-                                             -- multimedia keys
-                                             , ((modm,                 xK_KP_Add),       spawn "amixer -q sset Master 2%+")
-                                             , ((modm,                 xK_KP_Subtract),  spawn "amixer -q sset Master 2%-")
-                                             , ((modm,                 xK_KP_Enter),     spawn "amixer -q sset Master toggle")
-                                             , ((modm,                 xK_KP_Begin),     spawn "mpc toggle")
-                                             , ((modm,                 xK_KP_5),         spawn "mpc toggle")
-                                             , ((modm,                 xK_KP_Right),     spawn "mpc next")
-                                             , ((modm,                 xK_KP_6),         spawn "mpc next")
-                                             , ((modm,                 xK_KP_Left),      spawn "mpc prev")
-                                             , ((modm,                 xK_KP_4),         spawn "mpc prev")
-                                             ]
-
-      tombXmobarLogHook xmobar = dynamicLogWithPP defaultPP {
-                                    ppUrgent   = xmobarColor "white" "red" . wrap "!!!!!!!!!!!!" "!!!!!!!!!!!!"
-                                  , ppCurrent  = xmobarColor "white" "" -- . wrap "[" "]"
-                                  , ppTitle    = xmobarColor myActiveFGColor "" . shorten 160
-                                  , ppVisible  = xmobarColor myActiveFGColor "" -- wrap "(" ")"
-                                  , ppOutput   = hPutStrLn xmobar
-                                  }
+pangoSanitize :: String -> String
+pangoSanitize = foldr sanitize ""
+  where
+    sanitize '>'  acc = "&gt;" ++ acc
+    sanitize '<'  acc = "&lt;" ++ acc
+    sanitize '\"' acc = "&quot;" ++ acc
+    sanitize '&'  acc = "&amp;" ++ acc
+    sanitize x    acc = x:acc
+   
