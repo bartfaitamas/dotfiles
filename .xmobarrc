@@ -1,7 +1,7 @@
 Config { font = "-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
        , bgColor = "#2c2c32"
        , fgColor = "grey70"
-       , position = OnScreen 0 Top
+       , position = TopW L 85
        , lowerOnStart = True
        , commands = [ Run StdinReader
                     , Run Network "eth0" ["-L","0","-H","32","--normal","white","--high","#a6c292"] 10

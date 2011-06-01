@@ -46,7 +46,6 @@ XTerm*Utf8Title: true
 ! ! URxvt.color14:     #71bebe
 ! ! URxvt.color15:     #ffffff
 
-
 ! URxvt.tabbed.tab-bg: 8
 ! URxvt.tabbed.tab-fg: 4
 ! URxvt.tabbed.tabbar-bg: 8

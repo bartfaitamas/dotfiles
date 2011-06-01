@@ -1,3 +1,8 @@
+;; load-paths
+(setq load-path (cons "~/share/emacs/site-lisp" load-path))
+(setq load-path (cons "~/share/emacs/site-lisp/geben" load-path))
+
+
 ;;; This was installed by package-install.el.
 ;;; This provides support for the package system and
 ;;; interfacing with ELPA, the package archive.
@@ -8,8 +13,23 @@
      (expand-file-name "~/.emacs.d/elpa/package.el"))
   (package-initialize))
 
-;; ido-mode is cool
-(ido-mode)
+
+(require 'tramp)
+(setq tramp-default-method "scp")
+;; gnome2-globalmenu workaround
+;;(defun ggm-menuupdate () (menu-bar-mode -1) (menu-bar-mode 1))
+;;(add-hook 'window-configuration-change-hook 'ggm-menuupdate)
+
+;; interactively do things
+(require 'ido)
+    (ido-mode t)
+    (setq ido-enable-flex-matching t) ;; enable fuzzy matching
+
+(eval-after-load "htmlize"
+  '(progn
+     (defadvice htmlize-faces-in-buffer (after org-no-nil-faces activate)
+       "Make sure there are no nil faces"
+       (setq ad-return-value (delq nil ad-return-value)))))
 
 (load "~/.emacs.d/config/tomb-setup.el")
 (load "~/.emacs.d/config/tomb-org-mode.el")
@@ -44,17 +64,32 @@
  '(haskell-mode-hook (quote (turn-on-haskell-indent turn-on-haskell-doc-mode turn-on-haskell-ghci turn-on-haskell-indentation turn-on-haskell-doc-mode turn-on-haskell-decl-scan turn-on-font-lock)))
  '(indent-tabs-mode nil)
  '(mumamo-heredoc-modes (quote (("HTML" html-mode) ("CSS" css-mode) ("JAVASCRIPT" javascript-mode) ("JS" javascript-mode) ("JAVA" java-mode) ("GROOVY" groovy-mode) ("SQL" sql-mode))))
- '(show-paren-mode t)
- '(speedbar-frame-parameters (quote ((minibuffer) (width . 30) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
- '(speedbar-show-unknown-files t)
- '(tab-width 4)
  '(user-full-name "Bártfai Tamás László")
- '(user-mail-address "bartfai.tamas@gmail.com")
  '(yas/also-auto-indent-first-line t)
- '(yas/prompt-functions (quote (yas/ido-prompt yas/x-prompt yas/dropdown-prompt yas/completing-prompt yas/no-prompt)))
+ '(user-mail-address "bartfaitamas@gmail.com")
  '(yas/root-directory (quote ("~/.emacs.d/snippets" "/usr/share/emacs/site-lisp/yasnippet/snippets")) nil (yasnippet))
  '(yas/wrap-around-region "cua"))
 
+ '(Info-additional-directory-list (quote ("/usr/local/share/info")))
+ '(c-default-style (quote ((java-mode . "java") (awk-mode . "awk") (other . "cc-mode"))))
+ '(current-language-environment "UTF-8")
+ '(mail-user-agent (quote gnus-user-agent))
+ '(message-send-mail-function (quote message-smtpmail-send-it))
+ '(mumamo-background-chunk-major (quote mumamo-background-chunk-major))
+ '(mumamo-heredoc-modes (quote (("HTML" html-mode) ("CSS" css-mode) ("JAVASCRIPT" javascript-mode) ("JS" javascript-mode) ("'JS'" javascript-mode) ("JAVA" java-mode) ("GROOVY" groovy-mode) ("SQL" sql-mode))))
+ '(nxhtml-default-encoding (quote utf-8))
+ '(nxml-attribute-indent 8)
+ '(nxml-child-indent 4)
+ '(nxml-outline-child-indent 4)
+ '(org-agenda-files (quote ("~/org/hatharom.hu.org" "~/org/timelog.org" "~/org/todo.org")))
+ '(read-mail-command (quote gnus))
+ '(server-window (quote switch-to-buffer-other-frame))
+ '(show-paren-mode t)
+ '(speedbar-frame-parameters (quote ((minibuffer) (width . 40) (border-width . 0) (menu-bar-lines . 0) (tool-bar-lines . 0) (unsplittable . t) (left-fringe . 0))))
+ '(speedbar-show-unknown-files t)
+ '(sql-ms-options nil)
+ '(tab-width 4)
+ '(yas/prompt-functions (quote (yas/ido-prompt yas/x-prompt yas/dropdown-prompt yas/completing-prompt yas/no-prompt)))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
@@ -62,6 +97,13 @@
   ;; If there is more than one, they won't work right.
  '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Inconsolata")))))
 
+;; Mumamo colors for the charcoal-black theme
+ ;;'(default ((t (:inherit nil :stipple nil :background "Grey15" :foreground "Grey" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "Droid Sans Mono"))))
+ ;;'(mumamo-background-chunk-major ((t (:background "Grey15"))))
+ ;;'(mumamo-background-chunk-submode1 ((t (:background "Grey20"))))
+ ;;'(mumamo-background-chunk-submode2 ((t (:background "DarkSlateBlue"))))
+ ;;'(mumamo-background-chunk-submode3 ((t (:background "DarkOliveGreen"))))
+ ;;'(mumamo-background-chunk-submode4 ((((class color) (min-colors 88) (background dark)) (:background "SaddleBrown")))))
 
 
 ;;; Emacs/W3 Configuration

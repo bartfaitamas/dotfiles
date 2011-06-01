@@ -13,10 +13,28 @@
                           "~/share/emacs/site-lisp") load-path))
 (autoload 'owl-mode "owl-mode" "OWL mode." t)
 
-;; =================================================================================================
-;; n3 mode
-;; =================================================================================================
-;;(add-to-list 'load-path "{path}/n3-mode.el")
+;; -----------------------------------------------------------------------------
+;; yasnippets
+;; -----------------------------------------------------------------------------
+(add-to-list 'load-path "~/share/emacs/site-lisp/yasnippet")
+(require 'yasnippet)
+(yas/initialize)
+(yas/load-directory "~/share/emacs/site-lisp/yasnippet/snippets")
+(yas/load-directory "~/.emacs.d/snippets")
+(yas/load-directory "~/.emacs.d/mysnippets")
+(yas/define-snippets 'nxhtml-mode nil 'html-mode)
+
+;; -----------------------------------------------------------------------------
+;; geben debugger (for Xdebug)
+;; -----------------------------------------------------------------------------
+(autoload 'geben "geben" "PHP Debugger on Emacs" t)
+;; -----------------------------------------------------------------------------
+;; magic php mode
+;; -----------------------------------------------------------------------------
+;;(setq magic-fallback-mode-alist
+;;      (cons '("<\\?php" . php-mode)
+;;	    magic-fallback-mode-alist))
+
 (autoload 'n3-mode "n3-mode" "Major mode for OWL or N3 files" t)
 
 ;; Turn on font lock when in n3 mode
@@ -27,18 +45,16 @@
 ;; =================================================================================================
 ;; cucumber.el aka feature mode
 ;; =================================================================================================
-;; optional configurations
-;; default language if .feature doesn't have "# language: fi"
-;(setq feature-default-language "hu")
-(setq feature-default-language "en")
-;; point to cucumber languages.yml or gherkin i18n.yml to use
-;; exactly the same localization your cucumber uses
-;(setq feature-default-i18n-file "/path/to/gherkin/gem/i18n.yml")
-(setq feature-default-i18n-file "/usr/lib/ruby/gems/1.8/gems/gherkin-2.3.8/lib/gherkin/i18n.yml")
-;; and load feature-mode
-(require 'feature-mode)
-
-
+;;;; optional configurations
+;;;; default language if .feature doesn't have "# language: fi"
+;;;(setq feature-default-language "hu")
+;;(setq feature-default-language "en")
+;;;; point to cucumber languages.yml or gherkin i18n.yml to use
+;;;; exactly the same localization your cucumber uses
+;;;(setq feature-default-i18n-file "/path/to/gherkin/gem/i18n.yml")
+;;(setq feature-default-i18n-file "/usr/lib/ruby/gems/1.8/gems/gherkin-2.3.8/lib/gherkin/i18n.yml")
+;;;; and load feature-mode
+;;(require 'feature-mode)
 
 ;; =================================================================================================
 ;; cmake
@@ -59,38 +75,8 @@
 )
 (add-hook 'cmake-mode-hook (function cmake-rename-buffer))
 
-;; =================================================================================================
-;; magic php mode
-;; =================================================================================================
-(setq magic-fallback-mode-alist
-      (cons '("<\\?php" . php-mode)
-	    magic-fallback-mode-alist))
-(autoload 'geben "geben" "DBGp protocol frontend, a script debugger" t)
-;; =================================================================================================
-;; yasnippets
-;; =================================================================================================
-(require 'yasnippet)
-(yas/initialize)
-(yas/load-directory "~/.emacs.d/snippets")
-(yas/load-directory "~/Development/Emacs/snippets")
 
-;; =================================================================================================
-;; rinari and rails
-;; =================================================================================================
-(require 'yaml-mode)
-
-(require 'rinari)
-;;(setq rinari-tags-file-name "TAGS")
-
-;;; rhtml-mode
-;; (add-to-list 'load-path "~/share/emacs/site-lisp/rhtml")
-;; (require 'rhtml-mode)
-;; (add-hook 'rhtml-mode-hook
-;;      	  (lambda () (rinari-launch)))
-
-;; =================================================================================================
-;; nxhtml mode
-;; =================================================================================================
+(load "~/share/emacs/site-lisp/nxhtml/autostart.el")
 (setq
  nxhtml-global-minor-mode t
  mumamo-chunk-coloring 'submode-colored
@@ -98,60 +84,37 @@
  indent-region-mode t
  rng-nxml-auto-validate-flag nil
  nxml-degraded t)
-(load "~/share/emacs/site-lisp/nxhtml/autostart.el")
+
 
 ;; =================================================================================================
 ;; haml es sass mode
 ;; =================================================================================================
 (require 'haml-mode)
-;; (setq auto-mode-alist
-;;       (append auto-mode-alist
-;; 	      '(("\\.rhtml$" . rhtml-mode)
-;; 		("\\.erb$" . rhtml-mode)
-;; 		("Gemfile" . ruby-mode))))
+(require 'sass-mode)
 
 ;; =================================================================================================
 ;; ruby stuff
 ;; =================================================================================================
-(require 'ruby-block)
-(ruby-block-mode t)
-(setq ruby-block-highlight-toggle t)
-;;; ri
-;;(setq ri-ruby-script (expand-file-name "~/share/lib/ri-emacs.rb"))
-;;(autoload 'ri "~/share/emacs/site-lisp/ri-ruby.el" nil t)
-
-;;; js-mode and js-comint
-;;(require 'js-comint)
-;;(setq inferior-js-program-command "/usr/bin/java -cp /usr/share/java/js.jar org.mozilla.javascript.tools.shell.Main")
-;; (add-hook 'js2-mode-hook '(lambda () 
-;; 			    (local-set-key "\C-x\C-e" 'js-send-last-sexp)
-;; 			    (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
-;; 			    (local-set-key "\C-cb" 'js-send-buffer)
-;; 			    (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
-;; 			    (local-set-key "\C-cl" 'js-load-file-and-go)
-;; 			    ))
-;; (add-hook 'js-mode-hook '(lambda () 
-;; 			    (local-set-key "\C-x\C-e" 'js-send-last-sexp)
-;; 			    (local-set-key "\C-\M-x" 'js-send-last-sexp-and-go)
-;; 			    (local-set-key "\C-cb" 'js-send-buffer)
-;; 			    (local-set-key "\C-c\C-b" 'js-send-buffer-and-go)
-;; 			    (local-set-key "\C-cl" 'js-load-file-and-go)
-;; 			    ))
+;;(require 'ruby-block)
+;;(ruby-block-mode t)
+;;(setq ruby-block-highlight-toggle t)
 
 (setq auto-mode-alist
       (append
        (list
         '("\\.n3" . n3-mode)
         '("\\.owl" . n3-mode)
+        '("\\.nt" . n3-mode)
         '("\\.textile$" . textile-mode)
         '("\\.md$" . markdown-mode)
-        '("\\.feature$" . feature-mode)
+;;        '("\\.feature$" . feature-mode)
         '("\\.yml$" . yaml-mode)
         '("\\.scss$" . sass-mode)
         '("\\.js$" . js-mode)
         '("\\.json$" . js-mode)
         '("\\.html\\.erb$" . eruby-nxhtml-mumamo-mode)
         '("Gemfile" . ruby-mode)
-        '("\\.twig\\.html$" . django-nxhtml-mumamo))
+        '("\\.xml$" . nxml-mumamo-mode)
+        '("\\.twig$" . django-nxhtml-mumamo))
        auto-mode-alist))
 
