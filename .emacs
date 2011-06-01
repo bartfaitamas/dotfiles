@@ -64,10 +64,11 @@
  '(haskell-mode-hook (quote (turn-on-haskell-indent turn-on-haskell-doc-mode turn-on-haskell-ghci turn-on-haskell-indentation turn-on-haskell-doc-mode turn-on-haskell-decl-scan turn-on-font-lock)))
  '(indent-tabs-mode nil)
  '(mumamo-heredoc-modes (quote (("HTML" html-mode) ("CSS" css-mode) ("JAVASCRIPT" javascript-mode) ("JS" javascript-mode) ("JAVA" java-mode) ("GROOVY" groovy-mode) ("SQL" sql-mode))))
+ '(show-paren-mode t)
  '(user-full-name "Bártfai Tamás László")
- '(yas/also-auto-indent-first-line t)
  '(user-mail-address "bartfaitamas@gmail.com")
- '(yas/root-directory (quote ("~/.emacs.d/snippets" "/usr/share/emacs/site-lisp/yasnippet/snippets")) nil (yasnippet))
+ '(yas/also-auto-indent-first-line t)
+ '(yas/snippet-dirs (quote ("~/.emacs.d/snippets" "/usr/share/emacs/site-lisp/yasnippet/snippets")) nil (yasnippet))
  '(yas/wrap-around-region "cua"))
 
  '(Info-additional-directory-list (quote ("/usr/local/share/info")))
@@ -95,7 +96,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "unknown" :family "Inconsolata")))))
+ '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "Monaco")))))
 
 ;; Mumamo colors for the charcoal-black theme
  ;;'(default ((t (:inherit nil :stipple nil :background "Grey15" :foreground "Grey" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "Droid Sans Mono"))))
