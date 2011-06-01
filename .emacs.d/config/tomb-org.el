@@ -5,7 +5,15 @@
 
 (load "~/.emacs.d/config/tomb-org-funcs.el")
 
-(org-remember-insinuate)
+(setq org-clock-persist 'history)
+(org-clock-persistence-insinuate)
+
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+(define-key global-map "\C-cc" 'org-capture)
+
+
+
+;;(org-remember-insinuate)
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
@@ -15,19 +23,49 @@
 (setq 
  org-log-done '(state) ;; log everything
 
- org-agenda-files 
- (quote 
-  ("~/org/openadm.org" 
-   "~/org/tukir.org"
-   "~/org/npsh.org"
-   "~/org/timelog.org"
-   "~/org/openadm.org_archive"
-   "~/org/devel.in.npsh.hu.org"
-   "~/org/nka.org"))
+ org-agenda-files (quote 
+                   ("~/org/todo.org"
+                    ))
 
  org-agenda-columns-add-appointments-to-effort-sum t
+
+ org-agenda-ndays 7
+ org-agenda-show-all-dates t
+ org-agenda-skip-deadline-if-done t
+ org-agenda-skip-scheduled-if-done t
+ org-cycle-include-plain-lists t
+ org-deadline-warning-days 14
+ org-default-notes-file "~/org/notes.org"
+ org-fast-tag-selection-single-key (quote expert)
+;; org-remember-store-without-prompt t
+ org-reverse-note-order t
+ org-time-stamp-custom-formats (quote ("<%Y.%m.%d. %a>" . "<%Y.%m.%d. %a %H:%M>"))
+ org-clock-persist (quote clock)
+ org-clock-persist-query-resume t
+ org-clock-persist-query-save t
+;;  org-remember-templates (quote (
+;;                                 ("" 116 "* TODO %?
+;;   %i
+;;   %a" "~/org/todo.org" "Tasks" nil) 
+;;                                 ("" 106 "* %?
+;;  CLOCK-IN  %i
+;; " "~/org/timelog.org" nil nil) 
+;;                                 ("" 110 "* %k %?
+;;  CLOCK-IN  %i
+;; " "~/org/timelog.org" nil nil) 
+;;                                 ("" 100 "* %T %?
+;; " "~/org/hatharom.hu.org" nil nil)))
+ 
  org-agenda-custom-commands (quote 
-			     (("d" todo #("DELEGATED" 0 9 (face org-warning)) nil) 
+			     (("l" "Havi logbook" agenda ""
+                               ((org-agenda-show-log t)
+                                (org-agenda-ndays 31)
+                                (org-agenda-log-mode-items '(clock))
+                                (org-agenda-start-day "1")
+                                (org-agenda-start-with-log-mode t))
+                               "/var/www/nka/agenda-junius.txt"
+                               )
+                              ("d" todo #("DELEGATED" 0 9 (face org-warning)) nil) 
 			      ("c" todo #("DONE|DEFERRED|CANCELLED" 0 23 (face org-warning)) nil) 
 			      ("w" todo #("WAITING" 0 7 (face org-warning)) nil) 
 			      ("W" agenda "" ((org-agenda-ndays 21))) 
@@ -38,19 +76,7 @@
 			      ("u" alltodo "" ((org-agenda-skip-function 
 						(lambda nil (org-agenda-skip-entry-if 
 							     (quote scheduled) (quote deadline) (quote regexp) "<[^>]+>"))) 
-					       (org-agenda-overriding-header "Unscheduled TODO entries: ")))))
- org-agenda-ndays 7
- org-agenda-show-all-dates t
- org-agenda-skip-deadline-if-done t
- org-agenda-skip-scheduled-if-done t
- org-agenda-start-on-weekday nil
- org-cycle-include-plain-lists t
- org-deadline-warning-days 14
- org-default-notes-file "~/org/notes.org"
- org-fast-tag-selection-single-key (quote expert)
- org-remember-store-without-prompt t
- org-reverse-note-order t
- org-time-stamp-custom-formats (quote ("<%Y.%m.%d. %a>" . "<%Y.%m.%d. %a %H:%M>")))
+					       (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
 
 
 
@@ -58,10 +84,11 @@
 ;; org-mode config copied from Sacha Chua
 ;; ----------------------------------------------------------------------
 
-(setq org-remember-templates
-      '((?t "* TODO %?\n  %i\n  %a" "~/org/todo.org" "Tasks")
-	(?j "* %?\n CLOCK-IN  %i\n" "~/org/timelog.org")
-	(?d "* %T %?\n" "~/org/devel.in.npsh.hu.org")))
+;; (setq org-remember-templates
+;;       '((?t "* TODO %?\n  %i\n  %a" "~/org/todo.org" "Tasks")
+;;         (?j "* %?\n CLOCK-IN  %i\n" "~/org/timelog.org")
+;;         (?n "* %?\n CLOCK-IN  %i\n" "~/org/timelog.org")
+;;         (?d "* %T %?\n" "~/org/hatharom.hu.org")))
 
 
 ;; publishing
@@ -107,12 +134,26 @@
 	 :index-filename "sitemap.org"
 	 :index-title "Sitemap"
 	 )
+	("nka"
+	 :base-directory "~/Development/NKA/org/"
+	 :publishing-directory "/var/www/nka"
+	 :author "Bártfai Tamás"
+	 :email "TBartfai@novell.com"
+	 :publishing-function org-publish-org-to-html
+	 :recursive t
+	 :style "<link rel=stylesheet href=\"css/org.css\" type=\"text/css\">
+<link rel=stylesheet href=\"css/worg.css\" type=\"text/css\">"
+	 :table-of-contents 5
+	 :toc 5
+	 :language hu
+	 :auto-index t
+	 )
 	))
 
 (setq org-export-with-drawers t)
 
-(add-hook 'remember-mode-hook 
-	  'my-start-clock-if-needed 'append)
+;;(add-hook 'remember-mode-hook 
+;;	  'my-start-clock-if-needed 'append)
 
 ;; (add-hook 'org-after-todo-state-change-hook
 ;; 	  'sacha/org-clock-in-if-starting)

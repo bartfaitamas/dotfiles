@@ -89,7 +89,7 @@ URxvt.color15:     #ffffff
 !URxvt.colorBD: yellow
 
 URxvt.reverseVideo: false
-
+URxvt.urgentOnBell: true
 URxvt.tabbed.tab-bg: 8
 URxvt.tabbed.tab-fg: 4
 URxvt.tabbed.tabbar-bg: 8

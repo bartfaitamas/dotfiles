@@ -139,3 +139,174 @@ The XOXO buffer is named *xoxo-<source buffer name>*"
       (goto-char (point-min))
       )))
 
+
+;; ============================================================================
+;; weekly timesheet from:
+;; http://lvalue.blogspot.com/2010/02/weekly-timesheets-in-org-mode.html
+;; ============================================================================
+(defun egor/org-generate-weekly-timesheet (&optional org-buffer)
+  "Generates timesheet for the current week"
+  (interactive)
+
+  ;; Source buffer name defaults to <name of session>.org
+  ;; (unless org-buffer
+  ;;   (setq org-buffer (concat egor/session-name ".org")))
+  (setq org-buffer (current-buffer))
+
+  (let* ((seconds-start (time-to-seconds (current-time))))
+
+    ;; Find last Monday.
+    (while (not (= 1 (string-to-number (format-time-string "%u" (seconds-to-time seconds-start)))))
+      (setq seconds-start (- seconds-start 86400))) ;; minus one day
+
+    ;; Create time-sliced version of the org buffer and save it.
+    (let* ((calc-results (egor/org-create-time-slice-buffer
+                          org-buffer
+                          nil
+                          (format-time-string "%Y%m%d0000"
+                                              (seconds-to-time seconds-start))))
+           (report-end-marker "#+END"))
+
+      (save-excursion
+        ;; Switch to buffer with the Org slice.
+        (set-buffer
+         (nth 3 calc-results))
+
+        ;; Report is broken if there's no empty line before first headline. Fix it.
+        (beginning-of-buffer)
+        (when (looking-at "^\\*")
+          (insert "\n"))
+
+        ;; Insert time report at the end of the buffer and write it to file.
+        (end-of-buffer)
+        (org-clock-report)
+        (re-search-forward "^|")
+        (backward-char)
+        (set-mark (point))
+        (insert "Amount payable: $" (number-to-string (nth 2 calc-results)) "\n\n")
+        (search-forward report-end-marker)
+        (backward-char (length report-end-marker))
+        (write-file (concat egor/org-timesheet-file-name-prefix
+                            (substring org-buffer 0 -4)
+                            (format-time-string "-%y%m%d" (seconds-to-time seconds-start))
+                            (format-time-string "-%y%m%d" (current-time))
+                            ".org"))))))
+
+(defun egor/timestamp> (timestamp1 timestamp2)
+  "Returns true if the first timestamp is larger than second"
+
+  (string> (replace-regexp-in-string "[^0-9]" "" (or timestamp1 ""))
+           (replace-regexp-in-string "[^0-9]" "" (or timestamp2 ""))))
+
+
+(defun egor/org-create-time-slice-buffer (&optional src-buffer dest-buffer time-start time-end
+                                                    hourly-rate)
+  "Creates a copy of an Org buffer with all time stamps limited to given period"
+  (interactive)
+
+  ;; Default start time to beginning of the day.
+  (unless time-start
+    (setq time-start (format-time-string "%Y%m%d0000" (current-time))))
+
+  ;; Default end time to now.
+  (unless time-end
+    (setq time-end (format-time-string "%Y%m%d%H%M" (current-time))))
+
+  ;; Source buffer name defaults to <name of session>.org
+  ;; (unless src-buffer
+  ;;   (setq src-buffer (concat egor/session-name ".org")))
+  (setq src-buffer (current-buffer))
+
+  ;; Destination buffer name defaults to *<source buffer>-<start-time>-<end-time>.org*
+  (unless dest-buffer
+    (setq dest-buffer (concat "*" src-buffer "-" time-start "-" time-end ".org*")))
+
+  (save-excursion
+    (let* ((timestamp-re "[[<]\\([0-9]+-[0-9]+-[0-9]+ [A-Z][a-z][a-z] [0-9]+:[0-9]+\\)[]>]")
+           (clock-line-re (concat "^ +" org-clock-string " +" timestamp-re "\\(?:--"
+                                  timestamp-re "\\|\\)"))
+           (headline-start-re "^\\*+ ")
+           (time-total)
+           (earnings))
+
+        ;; Select destination buffer, creating it if necessary, and switch it to org-mode.
+        (set-buffer (get-buffer-create dest-buffer))
+        (unless (string= major-mode 'org-mode)
+          (org-mode))
+
+        ;; Copy contents of the source buffer to destination buffer.
+        (erase-buffer)
+        (insert-buffer-substring src-buffer)
+
+        ;; Edit all clock lines, limiting them to the given range.
+        (beginning-of-buffer)
+        (while (re-search-forward clock-line-re nil t)
+          (let* ((line-time-start (match-string-no-properties 1))
+                 (line-time-end (match-string-no-properties 2)))
+
+            ;; If there's no end time, insert current time.
+            (unless line-time-end
+              (setq line-time-end (org-insert-time-stamp (current-time) t t "--")))
+
+            ;; If it ended before start time, just remove the line from buffer.
+            (if (egor/timestamp> time-start line-time-end)
+                (progn
+                  (beginning-of-line)
+                  (kill-line 1))
+
+              ;; If line start time is before start time, replace it with start time.
+              (if (egor/timestamp> time-start line-time-start)
+                  (replace-match line-time-start nil nil nil 1)))))
+
+        ;; Calculate time totals.
+        (org-clock-display)
+
+        ;; Parse totals from message buffer (Org doesn't return the any other way.)
+        (save-excursion
+          (set-buffer "*Messages*")
+          (end-of-buffer)
+          (re-search-backward "Total file time: \\([0-9]+\\):\\([0-9]+\\).+\n")
+
+          ;; Assign hour and minute variables.
+          (setq hours (string-to-number (match-string-no-properties 1)))
+          (setq minutes (string-to-number (match-string-no-properties 2)))
+
+          ;; Remove noise from message buffer and minibuffer.
+          (message nil)
+          (replace-match ""))
+
+        ;; Calculate time totals.
+
+        ;; Remove tasks not worked on (i.e., not having time totals.)
+        (let* ((untimed-headlines (list)))
+
+           ;; Search for headlines from the bottom up.
+          (end-of-buffer)
+          (while (re-search-backward headline-start-re nil t)
+
+            ;; Check for time totals, and if missing, add headline to the list.
+            ;; We can't delete them as we go because that would destroy clock overlays.
+            (unless (org-overlays-at (- (line-end-position) 1))
+              (add-to-list 'untimed-headlines (line-beginning-position) t)))
+
+          ;; Delete found untimed headlines.
+          (dolist (headline-pos untimed-headlines)
+            (goto-char headline-pos)
+            (end-of-line)
+            (when (re-search-forward (concat "\\'\\|" headline-start-re) nil t)
+              (backward-char (length (match-string 0)))
+              (delete-region headline-pos (point)))))
+
+        ;; Calculate earnings.
+        (unless hourly-rate
+          (setq hourly-rate egor/org-hourly-rate))
+        (if hourly-rate
+            (setq earnings
+                  (ffloor (* hourly-rate (+ hours (/ minutes 60.0))))))
+
+        ;; Return results as a list.
+        (list hours minutes earnings (get-buffer dest-buffer)))))
+
+
+
+
