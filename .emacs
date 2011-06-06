@@ -65,10 +65,11 @@
  '(indent-tabs-mode nil)
  '(mumamo-heredoc-modes (quote (("HTML" html-mode) ("CSS" css-mode) ("JAVASCRIPT" javascript-mode) ("JS" javascript-mode) ("JAVA" java-mode) ("GROOVY" groovy-mode) ("SQL" sql-mode))))
  '(show-paren-mode t)
+ '(speedbar-show-unknown-files t)
  '(user-full-name "Bártfai Tamás László")
  '(user-mail-address "bartfaitamas@gmail.com")
  '(yas/also-auto-indent-first-line t)
- '(yas/snippet-dirs (quote ("~/.emacs.d/snippets" "/usr/share/emacs/site-lisp/yasnippet/snippets")) nil (yasnippet))
+ '(yas/prompt-functions (quote (yas/ido-prompt yas/dropdown-prompt yas/completing-prompt yas/x-prompt yas/no-prompt)))
  '(yas/wrap-around-region "cua"))
 
  '(Info-additional-directory-list (quote ("/usr/local/share/info")))

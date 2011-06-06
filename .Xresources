@@ -11,22 +11,26 @@ XTerm*Utf8Title: true
 ! !------------------------------------------------
 ! ! URxvt.background:  #000000
 ! ! URxvt.foreground:  #7f7f7f
-! URxvt.color0:      #000000
-! URxvt.color1:      #9e1828
-! URxvt.color2:      #aece92
-! URxvt.color3:      #968a38
-! URxvt.color4:      #414171
-! URxvt.color5:      #963c59
-! URxvt.color6:      #418179
-! URxvt.color7:      #bebebe
-! URxvt.color8:      #666666
-! URxvt.color9:      #cf6171
-! URxvt.color10:     #c5f779
-! URxvt.color11:     #fff796
-! URxvt.color12:     #4186be
-! URxvt.color13:     #cf9ebe
-! URxvt.color14:     #71bebe
-! URxvt.color15:     #ffffff
+
+URxvt.background:  #ffffff
+URxvt.foreground:  #111111
+
+URxvt.color0:      #000000
+URxvt.color1:      #9e1828
+URxvt.color2:      #aece92
+URxvt.color3:      #968a38
+URxvt.color4:      #414171
+URxvt.color5:      #963c59
+URxvt.color6:      #418179
+URxvt.color7:      #bebebe
+URxvt.color8:      #666666
+URxvt.color9:      #cf6171
+URxvt.color10:     #c5f779
+URxvt.color11:     #fff796
+URxvt.color12:     #4186be
+URxvt.color13:     #cf9ebe
+URxvt.color14:     #71bebe
+URxvt.color15:     #ffffff
 
 ! ! ------------------------------------------------
 ! ! URxvt.color0:      #000000
@@ -46,14 +50,14 @@ XTerm*Utf8Title: true
 ! ! URxvt.color14:     #71bebe
 ! ! URxvt.color15:     #ffffff
 
-! URxvt.tabbed.tab-bg: 8
-! URxvt.tabbed.tab-fg: 4
-! URxvt.tabbed.tabbar-bg: 8
-! URxvt.tabbed.tabbar-fg: 15
+URxvt.tabbed.tab-bg: 1
+URxvt.tabbed.tab-fg: 15
+URxvt.tabbed.tabbar-bg: 0
+URxvt.tabbed.tabbar-fg: 11
 
 URxvt.scrollBar: true
 URxvt.scrollstyle: plain
-!URxvt.scrollColor: #666666
+URxvt.scrollColor: #666666
 URxvt.loginShell: true
 
 ! Make ^G set urgent bit
