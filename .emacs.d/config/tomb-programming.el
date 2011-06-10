@@ -116,11 +116,8 @@
         '("\\.nt" . n3-mode)
         '("\\.textile$" . textile-mode)
         '("\\.md$" . markdown-mode)
-<<<<<<< Updated upstream
         '("\\.ms$" . tpl-mode)
         '("\\.mustache$" . tpl-mode)
-=======
->>>>>>> Stashed changes
         '("\\.feature$" . feature-mode)
         '("\\.yml$" . yaml-mode)
         '("\\.scss$" . sass-mode)
