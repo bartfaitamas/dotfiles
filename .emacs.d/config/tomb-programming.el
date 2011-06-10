@@ -103,6 +103,10 @@
 ;;(require 'ruby-block)
 ;;(ruby-block-mode t)
 ;;(setq ruby-block-highlight-toggle t)
+(require 'rspec-mode)
+
+(add-to-list 'load-path "~/share/emacs/site-lisp/cucumber-mode")
+(require 'feature-mode)
 
 (setq auto-mode-alist
       (append
@@ -114,7 +118,7 @@
         '("\\.md$" . markdown-mode)
         '("\\.ms$" . tpl-mode)
         '("\\.mustache$" . tpl-mode)
-;;        '("\\.feature$" . feature-mode)
+        '("\\.feature$" . feature-mode)
         '("\\.yml$" . yaml-mode)
         '("\\.scss$" . sass-mode)
         '("\\.js$" . js-mode)

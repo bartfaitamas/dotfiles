@@ -22,7 +22,7 @@
  org-remember-templates
  (list
   (list "Itthon"       ?i "** TODO %^{Title}\n   SCHEDULED: %^t\n   %?" (concat org-directory "/tasks/home.org"))
-  (list "Programozás"  ?i "** TODO %^{Title}\n   %i\n   %?" (concat org-directory "/tasks/home.org"))
+  (list "Programozás"  ?p "** TODO %^{Title}\n   %i\n   %?" (concat org-directory "/tasks/programming.org"))
   (list "Config"       ?c "** TODO %^{Title}\n   %?" (concat org-directory "/tasks/config.org"))
 ))
 

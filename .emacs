@@ -67,6 +67,8 @@
  '(js-indent-level 4)
  '(js2-basic-offset 2)
  '(mumamo-heredoc-modes (quote (("HTML" html-mode) ("CSS" css-mode) ("JAVASCRIPT" javascript-mode) ("JS" javascript-mode) ("JAVA" java-mode) ("GROOVY" groovy-mode) ("SQL" sql-mode))))
+ '(org-agenda-files "~/org/.agenda_files")
+ '(ruby-block-highlight-toggle t)
  '(show-paren-mode t)
  '(speedbar-show-unknown-files t)
  '(user-full-name "Bártfai Tamás László")
