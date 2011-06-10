@@ -11,6 +11,10 @@ XTerm*Utf8Title: true
 ! !------------------------------------------------
 ! ! URxvt.background:  #000000
 ! ! URxvt.foreground:  #7f7f7f
+
+URxvt.background:  #ffffff
+URxvt.foreground:  #111111
+
 URxvt.color0:      #000000
 URxvt.color1:      #9e1828
 URxvt.color2:      #aece92
@@ -46,14 +50,14 @@ URxvt.color15:     #ffffff
 ! ! URxvt.color14:     #71bebe
 ! ! URxvt.color15:     #ffffff
 
-! URxvt.tabbed.tab-bg: 8
-! URxvt.tabbed.tab-fg: 4
-! URxvt.tabbed.tabbar-bg: 8
-! URxvt.tabbed.tabbar-fg: 15
+URxvt.tabbed.tab-bg: 1
+URxvt.tabbed.tab-fg: 15
+URxvt.tabbed.tabbar-bg: 0
+URxvt.tabbed.tabbar-fg: 11
 
 URxvt.scrollBar: true
 URxvt.scrollstyle: plain
-!URxvt.scrollColor: #666666
+URxvt.scrollColor: #666666
 URxvt.loginShell: true
 
 ! Make ^G set urgent bit

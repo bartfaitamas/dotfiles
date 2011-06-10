@@ -72,7 +72,7 @@
  '(user-full-name "Bártfai Tamás László")
  '(user-mail-address "bartfaitamas@gmail.com")
  '(yas/also-auto-indent-first-line t)
- '(yas/snippet-dirs (quote ("~/.emacs.d/snippets" "/usr/share/emacs/site-lisp/yasnippet/snippets")) nil (yasnippet))
+ '(yas/prompt-functions (quote (yas/ido-prompt yas/dropdown-prompt yas/completing-prompt yas/x-prompt yas/no-prompt)))
  '(yas/wrap-around-region "cua"))
 
  '(Info-additional-directory-list (quote ("/usr/local/share/info")))
