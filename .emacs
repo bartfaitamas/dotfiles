@@ -63,8 +63,12 @@
  '(gnus-select-method (quote (nntp "news.gmane.org")))
  '(haskell-mode-hook (quote (turn-on-haskell-indent turn-on-haskell-doc-mode turn-on-haskell-ghci turn-on-haskell-indentation turn-on-haskell-doc-mode turn-on-haskell-decl-scan turn-on-font-lock)))
  '(indent-tabs-mode nil)
+ '(javascript-indent-level 2)
+ '(js-indent-level 4)
+ '(js2-basic-offset 2)
  '(mumamo-heredoc-modes (quote (("HTML" html-mode) ("CSS" css-mode) ("JAVASCRIPT" javascript-mode) ("JS" javascript-mode) ("JAVA" java-mode) ("GROOVY" groovy-mode) ("SQL" sql-mode))))
  '(show-paren-mode t)
+ '(speedbar-show-unknown-files t)
  '(user-full-name "Bártfai Tamás László")
  '(user-mail-address "bartfaitamas@gmail.com")
  '(yas/also-auto-indent-first-line t)
@@ -96,7 +100,7 @@
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "Monaco")))))
+ '(default ((t (:inherit nil :stipple nil :background "white" :foreground "black" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 98 :width normal :foundry "unknown" :family "Inconsolata")))))
 
 ;; Mumamo colors for the charcoal-black theme
  ;;'(default ((t (:inherit nil :stipple nil :background "Grey15" :foreground "Grey" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 90 :width normal :foundry "unknown" :family "Droid Sans Mono"))))

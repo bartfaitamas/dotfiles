@@ -5,6 +5,11 @@
 (setq show-parent-mode t)
 
 ;; =================================================================================================
+;; tpl-mode (mustache)
+;; =================================================================================================
+(require 'mustache-mode)
+
+;; =================================================================================================
 ;; owl mode
 ;; =================================================================================================
 (setq load-path (append '("~/Programok/Emacs/owl/emacs/owl/" 
@@ -19,9 +24,9 @@
 (add-to-list 'load-path "~/share/emacs/site-lisp/yasnippet")
 (require 'yasnippet)
 (yas/initialize)
-(yas/load-directory "~/share/emacs/site-lisp/yasnippet/snippets")
+;;(yas/load-directory "~/share/emacs/site-lisp/yasnippet/snippets")
 (yas/load-directory "~/.emacs.d/snippets")
-(yas/load-directory "~/.emacs.d/mysnippets")
+;:(yas/load-directory "~/.emacs.d/mysnippets")
 (yas/define-snippets 'nxhtml-mode nil 'html-mode)
 
 ;; -----------------------------------------------------------------------------
@@ -107,6 +112,8 @@
         '("\\.nt" . n3-mode)
         '("\\.textile$" . textile-mode)
         '("\\.md$" . markdown-mode)
+        '("\\.ms$" . tpl-mode)
+        '("\\.mustache$" . tpl-mode)
 ;;        '("\\.feature$" . feature-mode)
         '("\\.yml$" . yaml-mode)
         '("\\.scss$" . sass-mode)

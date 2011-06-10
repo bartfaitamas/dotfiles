@@ -11,22 +11,22 @@ XTerm*Utf8Title: true
 ! !------------------------------------------------
 ! ! URxvt.background:  #000000
 ! ! URxvt.foreground:  #7f7f7f
-! URxvt.color0:      #000000
-! URxvt.color1:      #9e1828
-! URxvt.color2:      #aece92
-! URxvt.color3:      #968a38
-! URxvt.color4:      #414171
-! URxvt.color5:      #963c59
-! URxvt.color6:      #418179
-! URxvt.color7:      #bebebe
-! URxvt.color8:      #666666
-! URxvt.color9:      #cf6171
-! URxvt.color10:     #c5f779
-! URxvt.color11:     #fff796
-! URxvt.color12:     #4186be
-! URxvt.color13:     #cf9ebe
-! URxvt.color14:     #71bebe
-! URxvt.color15:     #ffffff
+URxvt.color0:      #000000
+URxvt.color1:      #9e1828
+URxvt.color2:      #aece92
+URxvt.color3:      #968a38
+URxvt.color4:      #414171
+URxvt.color5:      #963c59
+URxvt.color6:      #418179
+URxvt.color7:      #bebebe
+URxvt.color8:      #666666
+URxvt.color9:      #cf6171
+URxvt.color10:     #c5f779
+URxvt.color11:     #fff796
+URxvt.color12:     #4186be
+URxvt.color13:     #cf9ebe
+URxvt.color14:     #71bebe
+URxvt.color15:     #ffffff
 
 ! ! ------------------------------------------------
 ! ! URxvt.color0:      #000000
@@ -74,7 +74,7 @@ URxvt.perl-ext-common: default,-searchable-scrollback,selection-popup,tabbed
 ! URxvt.boldItalicFont: xft:DejaVu Sans Mono:pixelsize=13:antialias=false
 
 
-URxvt.font: xft:monaco:size=10
+URxvt.font: xft:monaco:size=9:antialias=false
 !URxvt.boldFont: xft:Monaco:pixelsize=13:antialias=false
 !URxvt.italicFont: xft:Monaco:pixelsize=13:antialias=false
 !URxvt.boldItalicFont: xft:Monace:pixelsize=13:antialias=false
