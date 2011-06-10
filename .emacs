@@ -31,6 +31,7 @@
        "Make sure there are no nil faces"
        (setq ad-return-value (delq nil ad-return-value)))))
 
+(require 'compile)
 (load "~/.emacs.d/config/tomb-setup.el")
 (load "~/.emacs.d/config/tomb-org-mode.el")
 (load "~/.emacs.d/config/tomb-c-mode.el")
@@ -40,6 +41,7 @@
 ;;(load "~/.emacs.d/config/tomb-sql.el")
 ;;(load "~/.emacs.d/config/tomb-jabber-mode.el")
 (load "~/.emacs.d/config/tomb-tile.el")
+
 
 ;; =================================================================================================
 ;; ledger
@@ -75,8 +77,8 @@
  '(user-mail-address "bartfaitamas@gmail.com")
  '(yas/also-auto-indent-first-line t)
  '(yas/prompt-functions (quote (yas/ido-prompt yas/dropdown-prompt yas/completing-prompt yas/x-prompt yas/no-prompt)))
-'(yas/snippet-dirs (quote ("~/.emacs.d/snippets" "/usr/share/emacs/site-lisp/yasnippet/snippets")) nil (yasnippet))
- '(yas/wrap-around-region "cua"))
+ '(yas/snippet-dirs (quote ("~/.emacs.d/snippets" "/usr/share/emacs/site-lisp/yasnippet/snippets")) nil (yasnippet))
+ '(yas/wrap-around-region "cua")
 
  '(Info-additional-directory-list (quote ("/usr/local/share/info")))
  '(c-default-style (quote ((java-mode . "java") (awk-mode . "awk") (other . "cc-mode"))))
@@ -97,7 +99,7 @@
  '(speedbar-show-unknown-files t)
  '(sql-ms-options nil)
  '(tab-width 4)
-'(yas/prompt-functions (quote (yas/ido-prompt yas/x-prompt yas/dropdown-prompt yas/completing-prompt yas/no-prompt)))
+ '(yas/prompt-functions (quote (yas/ido-prompt yas/x-prompt yas/dropdown-prompt yas/completing-prompt yas/no-prompt))))
 (custom-set-faces
   ;; custom-set-faces was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
