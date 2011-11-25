@@ -27,10 +27,12 @@ fi
 xset fp+ $HOME/.fonts
 xset fp rehash
 
-trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0x2c2c32 --alpha 0 --height 10 &
+#trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0x2c2c32 --alpha 0 --height 10 &
 pulseaudio &
 mpd &
 gnome-settings-daemon --no-daemon &
+trayer --align left --edge top --width 200 --widthtype pixel --height 18 --heighttype pixel --distance 600 --distancefrom right &
+empathy &
 
 xmonad &
 xmonad_pid=$!

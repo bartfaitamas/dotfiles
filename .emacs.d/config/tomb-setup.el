@@ -10,7 +10,7 @@
 
 (global-font-lock-mode 1)
 
-(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(windmove-default-keybindings)
 
 (setq text-mode-hook 
       (quote (turn-on-auto-fill text-mode-hook-identify)))
@@ -27,6 +27,9 @@
 (set-default 'truncate-lines t)
 
 ;; UI
+(require 'color-theme-zenburn)
+(color-theme-zenburn)
+;;(require 'color-theme-wombat)
 ;;(require 'color-theme)
 ;;(color-theme-charcoal-black)
 ;;(color-theme-initialize)

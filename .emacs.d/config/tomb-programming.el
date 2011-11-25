@@ -19,6 +19,18 @@
 (autoload 'owl-mode "owl-mode" "OWL mode." t)
 
 ;; -----------------------------------------------------------------------------
+;; coffe script
+;; -----------------------------------------------------------------------------
+(add-to-list 'load-path "~/share/emacs/site-lisp/coffee-mode")
+(require 'coffee-mode)
+
+(defun coffee-custom ()
+  "coffee-mode-hook"
+ (set (make-local-variable 'tab-width) 2))
+
+(add-hook 'coffee-mode-hook
+  '(lambda() (coffee-custom)))
+;; -----------------------------------------------------------------------------
 ;; yasnippets
 ;; -----------------------------------------------------------------------------
 (add-to-list 'load-path "~/share/emacs/site-lisp/yasnippet")
@@ -33,6 +45,16 @@
 ;; geben debugger (for Xdebug)
 ;; -----------------------------------------------------------------------------
 (autoload 'geben "geben" "PHP Debugger on Emacs" t)
+(require 'geben)
+(defun geben-enter-php-mode ()
+  (let* ((local-path (buffer-file-name))
+     (session (and local-path (geben-source-find-session local-path))))
+    (if session
+        (let ((session nil))
+          (php-mode)))))
+
+(add-hook 'find-file-hook #'geben-enter-php-mode)
+
 ;; -----------------------------------------------------------------------------
 ;; magic php mode
 ;; -----------------------------------------------------------------------------
@@ -100,10 +122,19 @@
 ;; =================================================================================================
 ;; ruby stuff
 ;; =================================================================================================
-;;(require 'ruby-block)
-;;(ruby-block-mode t)
-;;(setq ruby-block-highlight-toggle t)
+(require 'ruby-block)
+(ruby-block-mode t)
+(setq ruby-block-highlight-toggle t)
 (require 'rspec-mode)
+(require 'rvm)
+(rvm-use-default)
+;; load bundle snippets
+(yas/load-directory "~/share/emacs/site-lisp/cucumber-mode/snippets")
+
+;; Rinari
+(add-to-list 'load-path "~/share/emacs/site-lisp/rinari")
+(require 'rinari)
+
 
 (add-to-list 'load-path "~/share/emacs/site-lisp/cucumber-mode")
 (require 'feature-mode)
@@ -125,7 +156,15 @@
         '("\\.json$" . js-mode)
         '("\\.html\\.erb$" . eruby-nxhtml-mumamo-mode)
         '("Gemfile" . ruby-mode)
+        '("Rakefile" . ruby-mode)
+        '("\\.rake$" . ruby-mode)
+        '("Capfile" . ruby-mode)
+        '("\\.gemspec$" . ruby-mode)
         '("\\.xml$" . nxml-mumamo-mode)
-        '("\\.twig$" . django-nxhtml-mumamo))
+        '("\\.haml$" . haml-mode)
+        '("Jimfile" . javascript-mode) 
+        '("\\.coffee$" . coffee-mode)
+        '("Cakefile" . coffee-mode)
+       '("\\.twig$" . django-nxhtml-mumamo-mode))
        auto-mode-alist))
 

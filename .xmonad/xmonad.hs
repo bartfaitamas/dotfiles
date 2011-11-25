@@ -6,6 +6,7 @@ import XMonad.Hooks.DynamicLog
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import XMonad.Actions.CycleWS
+import XMonad.Actions.Warp
 
 import XMonad.Hooks.UrgencyHook
 import XMonad.Hooks.ManageHelpers (isFullscreen, isDialog,  doFullFloat, doCenterFloat)
@@ -45,6 +46,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     -- launch gmrun
     , ((modMask .|. shiftMask, xK_p     ), spawn "gmrun")
 
+      -- banish mouse cursor out of the way
+    , ((modMask,               xK_z     ), banishScreen LowerLeft)
     -- close focused window 
     , ((modMask .|. shiftMask, xK_c     ), kill)
 
