@@ -1,0 +1,108 @@
+;; -*- lisp -*-
+(in-package stumpwm)
+
+;; i don't know why it's needed to be up here. the shifting commands through
+;; the defprog macro depends on it
+(defcommand rattopleft () ()
+  ""
+  (let* ((f (tile-group-current-frame (current-group)))
+         (ml (head-mode-line (current-head (current-group))))
+         (ml-height (if ml (mode-line-height ml) 0))
+         (cx (1+ (frame-x f)))
+         (cy (+ (frame-y f) ml-height)))
+    (ratwarp cx cy)))
+
+
+(defcommand ratbottomright () ()
+  ""
+  (let* ((f (tile-group-current-frame (current-group)))
+         (ml (head-mode-line (current-head (current-group))))
+         (ml-height (if ml (mode-line-height ml) 0))
+         (cx (+ -1 (frame-x f) (frame-width f)))
+         (cy (+ -1 (frame-y f) ml-height (frame-height f))))
+    (ratwarp cx cy)))
+
+
+
+(set-prefix-key (kbd "C-i"))
+
+(defun load-file (file)
+  (load (concatenate 'string (stumpwm::getenv "HOME") "/.stump/" file ".lisp")))
+
+(load-file "helpers")
+(load-file "swank")
+(load-file "groupkeys")
+
+(load-module "notifications")
+(define-key *root-map* (kbd "N") '*notifications-map*)
+
+
+(load-file "mode-line")
+(load-file "shifting")
+(load-file "defprog")
+(load-file "simple-mpd")
+
+(group-rename (current-group) "1")
+(dotimes (i 9)
+        (gnewbg (write-to-string (1+ i))))
+
+;; what are these?:
+;; *suppress-frame-indicator*, *debug-level*
+(setq *startup-message* "^1*^BStumpWM^b: not powered by bee-ant AI yet."
+      *debug-level* 0
+      *mouse-focus-policy* :click
+      *shell-program* (stumpwm:getenv "SHELL")
+      *mode-line-timeout* 5
+      *input-history-ignore-duplicates* t
+     )
+
+(defvar *terminal* "urxvtcd -e byobu")
+
+(defprog emacs "e" "emacs" '(:class "Emacs"))
+(defprog urxvt "c" *terminal* '(:class "URxvt"))
+(defprog conkeror "f" "conkeror" '(:class "Conkeror"))
+(defprog pidgin "p" "pidgin" '(:class "Pidgin"))
+
+
+;; key bindings
+(bind "I" "show-window-properties")
+(define-key *top-map* (kbd "s-z") "ratbottomright")
+(define-key *top-map* (kbd "s-KP_Begin") "mpd-toggle-pause")
+(define-key *top-map* (kbd "s-KP_Right") "mpd-next")
+(define-key *top-map* (kbd "s-KP_Left") "mpd-prev")
+
+
+(set-transient-gravity :top) ; popups
+
+
+(define-frame-preference "9"
+    (0 nil t :title "Asztal")
+  (0 nil t :title "stalonetray"))
+
+;; TODO Move this to the new method
+(defcommand conkeror () ()
+  "Start/Switchto Conkeror"
+  (run-or-raise "conkeror" '(:class "Conkeror")))
+
+(define-key *root-map* (kbd "w") "conkeror")
+
+(if (not (head-mode-line (current-head)))
+    (toggle-mode-line (current-screen) (current-head)))
+
+(run-shell-command "/usr/bin/gnome-settings-daemon")
+(run-shell-command "stalonetray")
+;;(run-shell-command "/usr/bin/gnome-keyring-daemon")
+(run-shell-command "/usr/bin/nm-applet")
+(run-shell-command "/usr/bin/pactl load-module module-x11-xsmp &")
+(run-shell-command "dropbox start")
+(run-shell-command "mpd")
+(run-shell-command "nautilus --no-default-window")
+
+
+;; (defun notify-urgent-window (target)
+;;   (call-interactively 'notifications-add "urgent"))
+
+;; (add-hook *urgent-window-hook* 'notify-urgent-window)
+
+
+(setq *stumpwm-started* t)

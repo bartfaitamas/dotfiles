@@ -1,0 +1,8 @@
+;;(load "~/Programs/WindowManager/stumpwm-tray/package.lisp")
+;;(load "~/Programs/WindowManager/stumpwm-tray/tray-log.lisp")
+;;(load "~/Programs/WindowManager/stumpwm-tray/tray.lisp")
+;;(load "~/Programs/WindowManager/stumpwm-tray/stumptray.lisp")
+;; (defcommand create-tray () ()
+;;            (simpletray:create))
+;; (defcommand destroy-tray () ()
+;;             (simpletray:destroy))
