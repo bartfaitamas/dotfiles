@@ -8,7 +8,7 @@
       (list
        "[^B%n^b] " ; group num
        ;; notification
-       "^13%N^n"
+       "^13%u^n"
        "^B%w^b"
 
        "^>" ; right align
