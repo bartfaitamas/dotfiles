@@ -1,4 +1,4 @@
-// -*- javascript -*-
+// -*- js3 -*-
 
 //allow for 'contrib' stuff
 load_paths.unshift("chrome://conkeror-contrib/content/");
@@ -29,24 +29,11 @@ define_delicious_webjumps ("bartfaitamas");
 define_lastfm_webjumps ("bartfaitamas");
 
 // Keys
-define_key(content_buffer_normal_keymap, "F", "follow-new-buffer");
+//define_key(content_buffer_normal_keymap, "F", "follow-new-buffer");
 
 // Session
 require("session.js");
 session_auto_save_auto_load = true;
-
-// Firebug
-define_variable("firebug_url",
-                "http://getfirebug.com/releases/lite/latest/firebug-lite.js#startOpened=true");
-function firebug(I) {
-    var doc = I.buffer.document;
-    var script = doc.createElement('script');
-    script.setAttribute('type', 'text/javascript');
-    script.setAttribute('src', firebug_url);
-    script.setAttribute('onload', 'firebug.init();');
-    doc.body.appendChild(script);
-}
-interactive("firebug", "open firebug lite", firebug);
 
 // adblock plus
 require('adblockplus');
