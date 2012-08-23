@@ -69,7 +69,7 @@ myManageHook = composeAll userDefinedHooks <+> manageHook myBaseConfig
 
     allowFullscreenHook = isFullscreen --> doFullFloat
 
-myLayoutHook = smartBorders $ avoidStruts $ onWorkspace "8" imLayout $ standardLayouts
+myLayoutHook = smartBorders $ avoidStruts $ imWorkspace $ emacsWorkspace $ standardLayouts
   where
     --                    numMasters, resizeIncr, splitRatio
     tall            = Tall 1          0.02        0.5
@@ -77,13 +77,20 @@ myLayoutHook = smartBorders $ avoidStruts $ onWorkspace "8" imLayout $ standardL
 
     rosters         = [skypeRoster, pidginRoster]
     pidginRoster    = And (ClassName "Pidgin") (Role "buddy_list")
-    skypeRoster     = ClassName "Skype" `And`
-                      Not (Title "Options") `And`
-                      Not (Role "Chats") `And`
-                      Not (Role "CallWindow") `And`
-                      Not (Role "CallWindowForm")
+    skypeRoster     = (ClassName "Skype") `And`
+                      (Not (Title "Options")) `And`
+                      (Not (Role "Chats")) `And`
+                      (Not (Role "CallWindow")) `And`
+                      (Not (Role "ConversationsWindow")) `And`
+                      (Not (Role "CallWindowForm"))
     imLayout        = withIMs (1%7) rosters Grid
 --    imLayout        = withIM (1%7) (Role "buddy_list") Grid
+
+    speedbar        = (Title "Speedbar 1.0")
+    emacsLayout     = withIM (1%7) speedbar standardLayouts
+
+    imWorkspace     = onWorkspace "8" imLayout
+    emacsWorkspace  = onWorkspace "2" emacsLayout
 
 main :: IO ()
 main = do
