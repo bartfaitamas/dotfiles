@@ -75,8 +75,9 @@ myLayoutHook = smartBorders $ avoidStruts $ imWorkspace $ emacsWorkspace $ stand
     tall            = Tall 1          0.02        0.5
     standardLayouts = tall ||| Mirror tall ||| Full
 
-    rosters         = [skypeRoster, pidginRoster]
-    pidginRoster    = And (ClassName "Pidgin") (Role "buddy_list")
+    rosters         = [skypeRoster, pidginRoster, empathyRoster]
+    empathyRoster   = (ClassName "Empathy") `And` (Role "contact_list")
+    pidginRoster    = (ClassName "Pidgin") `And` (Role "buddy_list")
     skypeRoster     = (ClassName "Skype") `And`
                       (Not (Title "Options")) `And`
                       (Not (Role "Chats")) `And`
@@ -98,6 +99,7 @@ main = do
   getWellKnownName dbus
   xmonad $ withUrgencyHook NoUrgencyHook $ myBaseConfig
     { terminal   = "urxvtcd -e byobu"
+    , focusFollowsMouse = False
     , modMask    = mod4Mask
     , manageHook = myManageHook
     , layoutHook = myLayoutHook -- smartBorders (layoutHook myBaseConfig)
