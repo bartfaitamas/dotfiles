@@ -58,3 +58,4 @@ function focusblock (buffer) {
 }
 add_hook('content_buffer_progress_change_hook', focusblock);
 */
+url_remoting_fn = load_url_in_new_buffer;

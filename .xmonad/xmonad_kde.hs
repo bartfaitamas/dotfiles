@@ -14,9 +14,12 @@ import XMonad.Layout.IM
 import XMonad.Layout.Grid
 import XMonad.Layout.LayoutModifier
 
+import XMonad.Util.Run(spawnPipe)
 import XMonad.Util.WindowProperties
 
-import qualified DBus.Client.Simple as D
+--import qualified DBus.Client.Simple as D
+import qualified DBus as D
+import qualified DBus.Client as D
 import qualified Codec.Binary.UTF8.String as UTF8
 import qualified XMonad.StackSet as W
 
@@ -25,33 +28,28 @@ import Control.Monad
 
 -- workaround a bug in xmonad not showing Java/Swing applications
 -- http://mth.io/posts/xmonad-java-focus/
-atom_WM_TAKE_FOCUS ::
-  X Atom
-atom_WM_TAKE_FOCUS =
-  getAtom "WM_TAKE_FOCUS"
+--atom_WM_TAKE_FOCUS :: X Atom
+--atom_WM_TAKE_FOCUS = getAtom "WM_TAKE_FOCUS"
 
-takeFocusX ::
-  Window
-  -> X ()
+takeFocusX :: Window -> X ()
 takeFocusX w =
-  withWindowSet . const $ do
-    dpy       <- asks display
-    wmtakef   <- atom_WM_TAKE_FOCUS
-    wmprot    <- atom_WM_PROTOCOLS
-    protocols <- io $ getWMProtocols dpy w
-    when (wmtakef `elem` protocols) $
-      io . allocaXEvent $ \ev -> do
-        setEventType ev clientMessage
-        setClientMessageEvent ev w wmprot 32 wmtakef currentTime
-        sendEvent dpy w False noEventMask ev
+ withWindowSet . const $ do
+   dpy       <- asks display
+   wmtakef   <- atom_WM_TAKE_FOCUS
+   wmprot    <- atom_WM_PROTOCOLS
+   protocols <- io $ getWMProtocols dpy w
+   when (wmtakef `elem` protocols) $
+     io . allocaXEvent $ \ev -> do
+       setEventType ev clientMessage
+       setClientMessageEvent ev w wmprot 32 wmtakef currentTime
+       sendEvent dpy w False noEventMask ev
 
-takeTopFocus ::
-  X ()
-takeTopFocus =
-  withWindowSet $ maybe (setFocusX =<< asks theRoot) takeFocusX . W.peek
+takeTopFocus :: X ()
+takeTopFocus = withWindowSet $ maybe (setFocusX =<< asks theRoot) takeFocusX . W.peek
 
 
-myBaseConfig = kde4Config
+--myBaseConfig = kde4Config
+myBaseConfig = defaultConfig
 
 myManageHook = composeAll userDefinedHooks <+> (krunnerRule --> manageHook myBaseConfig)
   where
@@ -104,13 +102,16 @@ main :: IO ()
 main = do
   dbus <- D.connectSession
   getWellKnownName dbus
+  xmproc <- spawnPipe "/home/tomb/.cabal/bin/xmobar"
   xmonad $ withUrgencyHook NoUrgencyHook $ myBaseConfig
-    { terminal   = "urxvtcd -e byobu"
+    { --terminal   = "urxvtcd -e byobu"
+      terminal     = "konsole -e byobu"
     , focusFollowsMouse = False
     , modMask    = mod4Mask
     , manageHook = myManageHook
     , layoutHook = myLayoutHook -- smartBorders (layoutHook myBaseConfig)
-    , logHook    = takeTopFocus >> setWMName "LG3D" >> dynamicLogWithPP (prettyPrinter dbus)
+--    , logHook    = takeTopFocus >> setWMName "LG3D" >> dynamicLogWithPP (prettyPrinter dbus)
+    , logHook    = dynamicLogWithPP (prettyPrinter dbus)
     }
     `additionalKeysP`
     [ ("M-z", banishScreen LowerLeft)
@@ -135,15 +136,22 @@ prettyPrinter dbus = defaultPP
 getWellKnownName :: D.Client -> IO ()
 getWellKnownName dbus = do
   D.requestName dbus (D.busName_ "org.xmonad.Log")
-    [D.AllowReplacement, D.ReplaceExisting, D.DoNotQueue]
+    [D.nameAllowReplacement, D.nameReplaceExisting, D.nameDoNotQueue]
   return ()
 
 dbusOutput :: D.Client -> String -> IO ()
-dbusOutput dbus str = D.emit dbus
-                      "/org/xmonad/Log"
-                      "org.xmonad.Log"
-                      "Update"
-                      [D.toVariant ("<b>" ++ (UTF8.decodeString str) ++ "</b>")]
+dbusOutput dbus str = do
+  let signal = (D.signal "/org/xmonad/Log" "org.xmonad.Log" "Update") {
+        D.signalBody = [D.toVariant (UTF8.decodeString str)]
+        }
+  D.emit dbus signal
+
+-- dbusOutput :: DC -> String -> IO ()
+-- dbusOutput dbus str = D.emit dbus
+--                       "/org/xmonad/Log"
+--                       "org.xmonad.Log"
+--                       "Update"
+--                       [D.toVariant ("<b>" ++ (UTF8.decodeString str) ++ "</b>")]
 
 pangoColor :: String -> String -> String
 pangoColor fg = wrap left right
