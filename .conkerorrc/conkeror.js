@@ -28,6 +28,12 @@ remove_hook("mode_line_hook", mode_line_adder(clock_widget)); // we don't need a
 define_delicious_webjumps ("bartfaitamas");
 define_lastfm_webjumps ("bartfaitamas");
 
+define_webjump("maven", "http://search.maven.org/#search|ga|1|%s");
+define_webjump("grepcode", "http://grepcode.com/search?query=%s");
+
+// page modes
+require("reddit");
+
 // Keys
 //define_key(content_buffer_normal_keymap, "F", "follow-new-buffer");
 
